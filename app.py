@@ -78,10 +78,7 @@ for feature in features:
     max_stats[feature] = best_pokemon
 
 for feature, best in max_stats.items():
-    name = best.iloc[0]['Name']
-    legendary = best.iloc[0]['Legendary']
-    stat_value = best.iloc[0][feature]  # Obtiene el valor de la estadística
-    st.write(f"**{feature}**: {name} (Valor: {stat_value}, Legendario: {legendary})")
+    st.write(f"**{feature}**: {best.iloc[0]['Name']} (Legendario: {best.iloc[0]['Legendary']})")
 
 
 # Interfaz para las entradas del usuario
