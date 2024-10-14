@@ -8,7 +8,7 @@ from sklearn.tree import ExtraTreeClassifier
 from sklearn.model_selection import GridSearchCV
 
 # Cargar el dataset
-df = pd.read_csv('./pokemon.csv')  # Cambia esto a la ubicación de tu dataset
+df = pd.read_csv('./Pokemon.csv')  # Cambia esto a la ubicación de tu dataset
 
 # Seleccionar las características y la variable objetivo
 X = df[['HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed']]
