@@ -4,7 +4,8 @@ import streamlit as st
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from sklearn.tree import ExtraTreeClassifier
+from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
 
 # Cargar el dataset
@@ -17,18 +18,22 @@ y = df['Legendary']
 # Dividir los datos en conjuntos de entrenamiento y prueba
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
 # Inicializar el modelo ExtraTrees
-model = ExtraTreeClassifier(random_state=42)
+svc = SVC()
 
 # GridSearch
 param_grid = {
-    'max_depth': [None, 10, 20, 30],
-    'min_samples_split': [2, 5, 10],
-    'min_samples_leaf': [1, 2, 4],
-    'criterion': ['gini', 'entropy']
+    'kernel': ['linear', 'rbf', 'poly'],
+    'C': [0.1, 1, 10, 100],
+    'gamma': ['scale', 'auto'],  # para rbf y poly
+    'degree': [2, 3, 4]  # solo para poly
 }
 
-grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=5, n_jobs=-1, verbose=2, scoring='accuracy')
+grid_search = GridSearchCV(svc, param_grid, cv=5)
 grid_search.fit(X_train, y_train)
 
 # Entrenar el mejor modelo
@@ -93,7 +98,9 @@ speed = st.number_input('Speed', min_value=0)
 # Botón para realizar la predicción
 if st.button('Predecir'):
     new_pokemon = np.array([[hp, attack, defense, sp_atk, sp_def, speed]])
-    prediction = best_model.predict(new_pokemon)
+    new_pokemon_scaled = scaler.transform(new_pokemon)
+
+    prediction = best_model.predict(new_pokemon_scaled)
 
     if prediction[0] == True:
         st.success("El Pokémon es legendario.")
